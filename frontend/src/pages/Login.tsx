@@ -24,8 +24,13 @@ const Login: React.FC = () => {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Login failed');
-      // Store login state (for demo, just a flag)
-      localStorage.setItem('isAdmin', 'true');
+      // Store login state with expiration (1 day)
+      const now = new Date();
+      const item = {
+        isAdmin: true,
+        expiry: now.getTime() + 24 * 60 * 60 * 1000, // 1 day in milliseconds
+      };
+      localStorage.setItem('adminSession', JSON.stringify(item));
       navigate('/admin');
     } catch (err: any) {
       setError(err.message);

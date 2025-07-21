@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTheme } from '../App';
 import { Code, Smartphone, Cloud, Brain } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Footer: React.FC = () => {
   const { isDark } = useTheme();
@@ -11,7 +12,7 @@ const Footer: React.FC = () => {
         : 'bg-gray-50 border-blue-200/30'
     }`}>
       <div className="max-w-7xl mx-auto px-4 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
           {/* Company Info */}
           <div className="md:col-span-2">
             <div className="flex items-center space-x-3 mb-4">
@@ -33,6 +34,19 @@ const Footer: React.FC = () => {
                 </div>
               ))}
             </div>
+          </div>
+          {/* Navigation */}
+          <div>
+            <h3 className={`font-semibold mb-4 ${isDark ? 'text-white' : 'text-gray-900'}`}>Navigation</h3>
+            <ul className={`space-y-2 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+              <li><Link to="/" className={`transition-colors ${isDark ? 'hover:text-white' : 'hover:text-gray-900'}`}>Home</Link></li>
+              <li><Link to="/about" className={`transition-colors ${isDark ? 'hover:text-white' : 'hover:text-gray-900'}`}>About</Link></li>
+              <li><Link to="/portfolio" className={`transition-colors ${isDark ? 'hover:text-white' : 'hover:text-gray-900'}`}>Portfolio</Link></li>
+              <li><Link to="/blog" className={`transition-colors ${isDark ? 'hover:text-white' : 'hover:text-gray-900'}`}>Blog</Link></li>
+              <li><Link to="/contact" className={`transition-colors ${isDark ? 'hover:text-white' : 'hover:text-gray-900'}`}>Contact</Link></li>
+              <li><Link to="/privacypolicy" className={`transition-colors ${isDark ? 'hover:text-white' : 'hover:text-gray-900'}`}>Privacy Policy</Link></li>
+              <li><Link to="/termsconditions" className={`transition-colors ${isDark ? 'hover:text-white' : 'hover:text-gray-900'}`}>Terms & Conditions</Link></li>
+            </ul>
           </div>
           {/* Services */}
           <div>

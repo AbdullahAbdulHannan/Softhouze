@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '../App';
-import { Calendar, User, Clock, Tag, ArrowRight, Search, BookOpen, TrendingUp } from 'lucide-react';
+import { Calendar, User, Clock, ArrowRight, Search, BookOpen } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { BASE_API_URL } from '../main';
 
@@ -26,7 +26,6 @@ const Blog: React.FC = () => {
   const { isDark } = useTheme();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedTag, setSelectedTag] = useState('All');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -48,21 +47,14 @@ const Blog: React.FC = () => {
       });
   }, []);
 
-  // Get all unique tags
-  const allTags = ['All', ...Array.from(new Set(posts.flatMap(post => post.tags)))];
-
   // Filter posts based on search and tag
   const filteredPosts = posts.filter(post => {
     const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          post.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesTag = selectedTag === 'All' || post.tags.includes(selectedTag);
-    return matchesSearch && matchesTag;
+    return matchesSearch;
   });
 
-  // Remove featured/regular split
-  // const featuredPosts = filteredPosts.filter(post => post.featured);
-  // const regularPosts = filteredPosts.filter(post => !post.featured);
 
   return (
     <div className={`min-h-screen transition-colors duration-300 ${
@@ -163,12 +155,12 @@ const Blog: React.FC = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredPosts.map((post) => (
-                <article key={post._id} className="group">
-                  <div className={`rounded-2xl overflow-hidden transition-all duration-300 group-hover:scale-105 ${
+                <article key={post._id} className="group h-full flex flex-col">
+                  <div className={`h-full flex flex-col rounded-2xl overflow-hidden transition-all duration-300 group-hover:scale-105 ${
                     isDark 
                       ? 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-600 hover:border-[#218EF2]/50'
                       : 'bg-gradient-to-br from-white to-gray-50 border border-gray-200 hover:border-[#218EF2]/50 shadow-lg'
-                  }`}>
+                  } min-h-[500px]`}>
                     <div className="relative overflow-hidden">
                       <img 
                         src={post.thumbnail || post.image} 
@@ -214,7 +206,7 @@ const Blog: React.FC = () => {
                         {post.title}
                       </h3>
                       
-                      <p className={`mb-4 leading-relaxed break-words ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{
+                      <p className={`mb-8 leading-relaxed break-words h-20 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{
                         post.excerpt && post.excerpt.length > 120
                           ? post.excerpt.slice(0, 120) + '...'
                           : post.excerpt

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '../App';
-import { ExternalLink, Github, Calendar, Tag, Eye, Code, Smartphone, Globe, Brain } from 'lucide-react';
+import { ExternalLink, Github, Calendar, Code } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { BASE_API_URL } from '../main';
+import ProjectModal from '../components/ProjectModal';
 
 interface Project {
   _id: string;
@@ -20,6 +21,7 @@ const Portfolio: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   useEffect(() => {
     setLoading(true);
@@ -38,6 +40,14 @@ const Portfolio: React.FC = () => {
         setLoading(false);
       });
   }, []);
+
+  const openModal = (project: Project) => {
+    setSelectedProject(project);
+  };
+
+  const closeModal = () => {
+    setSelectedProject(null);
+  };
 
 
   return (
@@ -98,12 +108,12 @@ const Portfolio: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {projects.map((project) => {
                 return (
-                  <div key={project._id} className="group">
-                    <div className={`rounded-2xl overflow-hidden transition-all duration-300 group-hover:scale-105 ${
+                  <div key={project._id} className="group h-full flex flex-col cursor-pointer" onClick={() => openModal(project)}>
+                    <div className={`h-full flex flex-col rounded-2xl overflow-hidden transition-all duration-300 group-hover:scale-105 ${
                       isDark 
                         ? 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-600 hover:border-[#218EF2]/50'
                         : 'bg-gradient-to-br from-white to-gray-50 border border-gray-200 hover:border-[#218EF2]/50 shadow-lg'
-                    }`}>
+                    } min-h-[500px]`}>
                       {/* Project Thumbnail */}
                       <div className="relative overflow-hidden">
                         <img 
@@ -130,7 +140,7 @@ const Portfolio: React.FC = () => {
                           </div>
                         </div>
                         
-                        <p className={`mb-4 leading-relaxed line-clamp-3 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+                        <p className={`mb-4 leading-relaxed line-clamp-3 h-20 break-words ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
                           {project.description}
                         </p>
 
@@ -221,6 +231,7 @@ const Portfolio: React.FC = () => {
           </Link>
         </div>
       </section>
+      <ProjectModal project={selectedProject} onClose={closeModal} />
     </div>
   );
 };

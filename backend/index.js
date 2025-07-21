@@ -3,6 +3,7 @@ import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 import postRoutes from './routes/post.route.js'
 import projectRoutes from './routes/project.route.js'
+import authRoutes from './routes/auth.route.js'
 import cookieParser from 'cookie-parser'
 import path from 'path'
 import cors from 'cors';
@@ -20,12 +21,13 @@ const __dirname = path.resolve()
 
 const app = express()
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: process.env.FRONTEND_URL,
   credentials: true
 }));
 app.use(express.json())
 app.use(cookieParser())
 
+app.use('/api/auth', authRoutes)
 app.use('/api/post', postRoutes)
 app.use('/api/project', projectRoutes)
 

@@ -1,7 +1,5 @@
-import React from 'react';
-import { useState, useEffect, createContext, useContext } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
-import { Menu, X, Code, Smartphone, Cloud, Brain, Home as HomeIcon, User, Briefcase, FileText, Mail, Sun, Moon } from 'lucide-react';
+import React, { createContext, useContext, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Home from './pages/Home';
 import About from './pages/About';
 import Portfolio from './pages/Portfolio';
@@ -12,6 +10,8 @@ import Admin from './pages/Admin';
 import Login from './pages/Login';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsConditions from './pages/TermsConditions';
 
 // Theme Context
 interface ThemeContextType {
@@ -26,16 +26,8 @@ const ThemeContext = createContext<ThemeContextType>({
 
 export const useTheme = () => useContext(ThemeContext);
 
-const menuItems = [
-  { key: 'home', label: 'Home', path: '/', icon: HomeIcon },
-  { key: 'about', label: 'About', path: '/about', icon: User },
-  { key: 'portfolio', label: 'Portfolio', path: '/portfolio', icon: Briefcase },
-  { key: 'blog', label: 'Blog', path: '/blog', icon: FileText },
-  { key: 'contact', label: 'Contact', path: '/contact', icon: Mail },
-];
-
 function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [isDark, setIsDark] = useState(true);
+  const [isDark, setIsDark] = React.useState(true);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
@@ -58,7 +50,14 @@ function ThemeProvider({ children }: { children: React.ReactNode }) {
 }
 
 function RequireAuth({ children }: { children: JSX.Element }) {
-  if (localStorage.getItem('isAdmin') !== 'true') {
+  const itemStr = localStorage.getItem('adminSession');
+  if (!itemStr) {
+    return <Navigate to="/login" replace />;
+  }
+  const item = JSON.parse(itemStr);
+  const now = new Date();
+  if (now.getTime() > item.expiry) {
+    localStorage.removeItem('adminSession');
     return <Navigate to="/login" replace />;
   }
   return children;
@@ -66,15 +65,11 @@ function RequireAuth({ children }: { children: JSX.Element }) {
 
 function AppLayout() {
   const location = useLocation();
-  const { isDark, toggleTheme } = useTheme();
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const { isDark } = useTheme();
   
   React.useEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
-
-  const currentPath = location.pathname;
-  const isActive = (path: string) => currentPath === path;
 
   return (
     <div className={`min-h-screen transition-colors duration-300 ${
@@ -91,6 +86,8 @@ function AppLayout() {
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:id" element={<BlogDetail />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-conditions" element={<TermsConditions />} />
           <Route path="/login" element={<Login />} />
           <Route path="/admin" element={<RequireAuth><Admin /></RequireAuth>} />
         </Routes>

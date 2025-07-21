@@ -20,7 +20,7 @@ const BlogList: React.FC<Props> = ({ blogs, isDark, editBlog, deleteBlog, loadin
       <p>No blog posts found. Add a new one!</p>
     ) : (
       blogs.map((blog) => (
-        <div key={blog._id} className={`rounded-2xl overflow-hidden transition-all duration-300 ${
+        <div key={blog._id} className={`flex flex-col h-full rounded-2xl overflow-hidden transition-all duration-300 ${
           isDark 
             ? 'bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-600 hover:border-[#218EF2]/50'
             : 'bg-gradient-to-br from-white to-gray-50 border border-gray-200 hover:border-[#218EF2]/50 shadow-lg'
@@ -40,9 +40,9 @@ const BlogList: React.FC<Props> = ({ blogs, isDark, editBlog, deleteBlog, loadin
               <span className={`px-3 py-1 rounded-full text-xs font-medium ${isDark ? 'bg-gray-800 text-blue-300' : 'bg-blue-100 text-blue-700'}`}>{blog.category}</span>
             </div>
           </div>
-          <div className="p-6">
+          <div className="flex flex-col flex-1 p-6">
             <h3 className={`text-lg font-bold mb-2 line-clamp-2 ${isDark ? 'text-white' : 'text-gray-900'}`}>{blog.title}</h3>
-            <p className={`text-sm mb-3 break-words ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{
+            <p className={`text-sm mb-3 break-words line-clamp-2 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>{
               blog.excerpt && blog.excerpt.length > 120
                 ? blog.excerpt.slice(0, 120) + '...'
                 : blog.excerpt
@@ -62,6 +62,7 @@ const BlogList: React.FC<Props> = ({ blogs, isDark, editBlog, deleteBlog, loadin
               <span>{blog.author}</span>
               <span>{blog.createdAt ? new Date(blog.createdAt).toLocaleDateString() : 'No date'}</span>
             </div>
+            <div className="flex-grow" />
             <div className="flex items-center justify-between mt-2">
               <button onClick={() => editBlog(blog)} className="text-blue-400 hover:text-blue-300 transition-colors">
                 <Edit className="w-4 h-4" />
